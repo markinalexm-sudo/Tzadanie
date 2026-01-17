@@ -3,56 +3,57 @@ package main
 import "fmt"
 
 func main() {
-	// Входные данные из условия
+	// Исходные данные
 	a := []int{5, 1, 2, 5}
 	b := []int{4, 2, 5, 1, 1, 2}
 
-	// 1. Убираем дубликаты
-	cleanA := removeDuplicates(a)
-	cleanB := removeDuplicates(b)
+	// 1. Делаем уникальные списки
+	// Использую свою функцию, чтобы не повторять код
+	uniqA := removeDuplicates(a)
+	uniqB := removeDuplicates(b)
 
-	fmt.Printf("%v, %v\n", cleanA, cleanB)
+	fmt.Printf("%v, %v\n", uniqA, uniqB)
 
-	// 2. Находим пересечения (ищем общие числа)
-	common := findIntersection(cleanA, cleanB)
+	// 2. Ищем пересечения (среди уникальных)
+	common := findIntersection(uniqA, uniqB)
 	fmt.Printf("%v\n", common)
 
-	// 3. Объединяем оба списка в один уникальный
+	// 3. Соединяем все вместе
+	// append(a, b...) распаковывает второй слайс
 	combined := append(a, b...)
-	uniqueCombined := removeDuplicates(combined)
+	final := removeDuplicates(combined)
 
-	fmt.Printf("%v\n", uniqueCombined)
+	fmt.Printf("%v\n", final)
 }
 
-// removeDuplicates возвращает слайс без повторов
+// Функция удаляет повторы через карту
 func removeDuplicates(nums []int) []int {
-	seen := make(map[int]bool)
+	m := make(map[int]bool)
 	var result []int
 
-	for _, num := range nums {
-		// Если числа еще не было в map, добавляем его
-		if !seen[num] {
-			seen[num] = true
-			result = append(result, num)
+	for _, n := range nums {
+		if !m[n] {
+			m[n] = true
+			result = append(result, n)
 		}
 	}
 	return result
 }
 
-// findIntersection ищет общие элементы в двух списках
+// Функция ищет общие элементы
 func findIntersection(a, b []int) []int {
-	// Делаем "справочник" из первого списка
-	checkMap := make(map[int]bool)
-	for _, num := range a {
-		checkMap[num] = true
+	m := make(map[int]bool)
+	// Записываем первый массив в карту
+	for _, n := range a {
+		m[n] = true
 	}
 
-	var intersection []int
-	for _, num := range b {
-		// Если число из второго списка есть в справочнике
-		if checkMap[num] {
-			intersection = append(intersection, num)
+	var res []int
+	for _, n := range b {
+		// Проверяем, есть ли число во втором массиве
+		if m[n] {
+			res = append(res, n)
 		}
 	}
-	return intersection
+	return res
 }
